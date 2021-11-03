@@ -1,5 +1,8 @@
 const express = require ("express")
 const app = express()
+const cors = require ("cors")
+
+app.use(cors())
 app.use (express.urlencoded({extended:false}))
 app.use(express.json());
 
@@ -8,7 +11,7 @@ app.use(express.json());
 class Profesional {
     
      constructor(name, age, gnere,isRetired,
-        nacionality, oscarsNumber,profession,id)
+        nacionality, oscarsNumber,profession)
         {
             this.name= name;
             this.age= age;
@@ -17,192 +20,76 @@ class Profesional {
             this.nacionality = nacionality;
             this.oscarsNumber = oscarsNumber;
             this.profession = profession;
-            this.id= id;
 
         }
     }
-let profesional= new Profesional();
-profesional=null;
 
-//crear un nuevo profesional
-app.post("/profesional", function(request,response)
-{
-    let respuesta;
-    console.log(request.body)
 
-    if (usuario === null){
-        profesional={ nombre: request.body.nombre1,
-                    age:request.body.edad1,
-                    gnere: request.body.genero1,
-                    isRetired: request.body.retirado1,
-                    nacionality: request.body.nacionalidad1,
-                    oscarNumber: request.body.oscar1,
-                    profession:request.body.profession1,
-                    id:request.body.id1,
-        
 
-        }
-        respuesta={ error:false, codigo:200,
-                    mensaje:"profesional creado", resultado:profesional}
-    }
-    else 
-    respuesta= {error:true, codigo:200,
-        mensaje:"profesional ya existe", resultado:null};
-    response.send(respuesta);
-})
-//modificar usuario
-app.put("/profesional", function(request,response){
-    let respuesta;
-    if (profesional!= null){
-        profesional={ nombre: request.body.nombre1,
-                    age:request.body.edad1,
-                    gnere: request.body.genero1,
-                    isRetired: request.body.retirado1,
-                    nacionality: request.body.nacionalidad1,
-                    oscarNumber: request.body.oscar1,
-                    profession:request.body.profession1,
-                    id:request.body.id1
-        
+let profesional1=new Profesional ("Pepe",23,"M",true,"español", 23, "guionista")
+let profesional2=new Profesional ("Cariol",23,"F",true,"española", 45, "guionista")
+let profesionales = [profesional1,profesional2]
 
-                    }
-        respuesta={ error:false, codigo:200,
-                    mensaje:"profesional actualizado", resultado:profesional}
-    }
-    else 
-    respuesta= {error:true, codigo:200,
-        mensaje:"profesional no existe", resultado:profesional};
-    response.send(respuesta);
-
-});
-
-//borrar profesional
-app.delete("/profesional", function(request,response){
-    let respuesta;
-    if (profesional != null){
-        profesional= null
-        respuesta = { error:false, codigo:200,
-            mensaje:"profesional borrado", resultado:profesional}
-
-        } 
-    else 
-    respuesta ={ error:true, codigo:200,
-        mensaje:"el profesional no exite", resultado:profesional}
-    response.send(respuesta)
-});
-
-//obtener informacion profesional
-
-app.get("/profesional", function(request,response){
-    let name = request.query.name 
-    let respuesta;
-    if (profesional != null && (!name || name === profesional.nombre))
-        respuesta.profesional
-    else 
+app.get ("/profesionales", function(request,response){
+    let respuesta 
+    let id = request.query.id
+    if((id != null)&& (profesionales.length!=0))
+        respuesta= profesionales[id]
+    
+    else if (id== null && profesionales.length!=0)
+        respuesta=profesionales
+    else
     respuesta ={error:true, codigo:200, mensaje: "el profesional no existe"}
     response.send(respuesta)
 
 })
-
-//PROFESIONALES
-
-let profesionales = new Array()
-profesionales= null
-//Añadir profesional
-app.post("/profesionales", function(request,response)
-{
+app.post("/profesionales", function(request,response){
     let respuesta;
-    console.log(request.body)
+    let name= request.body.name;
+    let age=request.body.age;
+    let isRetired=request.body.isRetired;
+    let nacionality=request.body.nacionality;
+    let oscarsNumber=request.body.oscarsNumber;
+    let profession=request.body.profession;
+    let profesional = new Profesional(name, age, isRetired, nacionality, oscarsNumber, profession)
 
-    for (let i=0;i<profesionales.length;i++){
-
-        if (profesionales[i].profesional == null){
-           
-            profesionales.push(profesional);           
-            respuesta={ error:false, codigo:200,
-                         mensaje:"profesional añadido", resultado:profesional}
-        }
-
-        else 
-        respuesta= {error:true, codigo:200,
-                    mensaje:"profesional ya existe", resultado:null};
+    profesionales.push(profesional);
+    respuesta= {error: false, codigo: 200, mensaje: "se ha añadido un profesional nuevo", resultado:profesional }
     response.send(respuesta);
-}
-    
-})
+});
 
-//Modificar profesional
 app.put("/profesionales", function(request,response){
     let respuesta;
-    for (let i=0;i<profesionales.length;i++){
-        if (profesional != profesionales[i]){
-            profesionales.push(profesional);
-            respuesta={ error:false, codigo:200,
-                    mensaje:"profesional actualizado", resultado:profesional}
-        }
-        else 
-        respuesta= {error:true, codigo:200,
-                    mensaje:"profesional no existe", resultado:profesional};
-    
+    let id = request.body.id
+    if (id!=null && profesionales.length!=0)
+    {
+        profesionales.id.name= nombre
+        profesionales.id.age= age
+        profesionales.id.isRetired= isRetired
+        profesionales.id.nacionality= nacionality
+        profesionales.id.oscarNumber= oscarNumber
+        profesionales.id.profession= profession
+        
+        respuesta= {error: false, codigo: 200, mensaje: "se han realizado cambios", resultado:profesional }
+        
     }
-        response.send(respuesta);
-});
-
-//Borrar profesional
-app.delete("/profesionales", function(request,response){
-    let respuesta;
-    for (let i=0;i<profesionales.length;i++){
-        if (profesional != profesionales[i]){
-            profesional= null
-            respuesta = { error:false, codigo:200,
-                    mensaje:"profesional borrado", resultado:profesional}
-
-        } 
-        else 
-            respuesta ={ error:true, codigo:200,
-                         mensaje:"el profesional no exite", resultado:profesional}
-    }
-    response.send(respuesta)
-});
-
-app.get("/profesionales", function(request,response){
-    let id = request.query.id 
-    let respuesta;
-    for (let i=0; i<profesionales.length; i++){
-        if (profesional == profesionales[i] && (!id || id === profesional.id))
-            respuesta.profesional
-        else 
-        respuesta ={error:true, codigo:200, mensaje: "el profesional no existe"}
-    }
-
-    response.send(respuesta);
-
-});
-//id
-app.get("/profesionales", function(request,response){
-    let id = request.query.id 
-    let respuesta;
-    for (let i=0; i<profesionales.length;i++){
-    if (profesional == profesionales[i] && (!id || id === profesional.id))
-        respuesta.profesional
+   
     else 
-    respuesta ={error:true, codigo:200, mensaje: "el profesional no existe"}
-    }
-    response.send(respuesta)
+    respuesta={error: false, codigo: 200, mensaje: "el profesional no existe", resultado:profesional }
 
-})
-//Mostrar profesionales en general
-app.get("/profesional", function(request,response){
-    let name = request.query.name 
-    let respuesta;
-    for (let i=0; i<profesionales.length;i++){
-        if (profesionales[i] != null && (!name || name === profesionales[i]))
-            respuesta.profesional
-        else 
-        respuesta ={error:true, codigo:200, mensaje: "el profesional no existe"}
-    }
-    response.send(respuesta)
-
+response.send(respuesta);
 })
 
+// app.delete("/profesionales", function(request,response){
+//     let respuesta;
+//     let id = request.body.id
+//     if (id!=null && profesionales.length!=0){
+//         respuesta= profesionales.splice(id)
+//     }
+//     else 
+//     respuesta={error: false, codigo: 200, mensaje: "el profesional no existe", resultado:profesional }
+
+// response.send(respuesta);
+// })
 
 app.listen(3000);
