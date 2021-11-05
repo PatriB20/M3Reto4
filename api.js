@@ -63,14 +63,14 @@ app.put("/profesionales", function(request,response){
     let id = request.body.id
     if (id!=null && profesionales.length!=0)
     {
-        profesionales.id.name= nombre
-        profesionales.id.age= age
-        profesionales.id.isRetired= isRetired
-        profesionales.id.nacionality= nacionality
-        profesionales.id.oscarNumber= oscarNumber
-        profesionales.id.profession= profession
+        profesionales[id].name= request.body.name
+        profesionales[id].age= request.body.age
+        profesionales[id].isRetired= request.body.isRetired
+        profesionales[id].nacionality= request.body.nacionality
+        profesionales[id].oscarNumber= request.body.oscarNumber
+        profesionales[id].profession= request.body.profession
         
-        respuesta= {error: false, codigo: 200, mensaje: "se han realizado cambios", resultado:profesional }
+        respuesta= {error: false, codigo: 200, mensaje: "se han realizado cambios" }
         
     }
    
@@ -80,16 +80,16 @@ app.put("/profesionales", function(request,response){
 response.send(respuesta);
 })
 
-// app.delete("/profesionales", function(request,response){
-//     let respuesta;
-//     let id = request.body.id
-//     if (id!=null && profesionales.length!=0){
-//         respuesta= profesionales.splice(id)
-//     }
-//     else 
-//     respuesta={error: false, codigo: 200, mensaje: "el profesional no existe", resultado:profesional }
+app.delete("/profesionales", function(request,response){
+    let respuesta;
+    let id = request.body.id
+    if (id!=null && profesionales.length!=0){
+        respuesta= profesionales.splice(id,1)
+    }
+    else 
+    respuesta={error: false, codigo: 200, mensaje: "el profesional no existe" }
 
-// response.send(respuesta);
-// })
+response.send(respuesta);
+})
 
 app.listen(3000);
